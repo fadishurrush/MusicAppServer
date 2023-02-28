@@ -1,0 +1,18 @@
+{
+  "name": "muicapp_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "mongoose": "^6.9.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.20"
+  }
+}
