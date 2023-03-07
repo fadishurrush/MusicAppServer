@@ -11,7 +11,6 @@ const {
 songRouter.post("/postSong", addSong);
 
 songRouter.get("/getSong", getSong);
-
 songRouter.delete("/deleteSong", deleteSong);
 songRouter.patch("/updateSong", updateSong);
 songRouter.get("/getAllSongs", getAllSongs);

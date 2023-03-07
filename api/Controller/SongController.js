@@ -49,11 +49,13 @@ module.exports = {
             res.status(405).json({message: e})
         })
     },
-    getAllSongs : async(res)=>{
-        songModule.find().then((all)=>{
+    getAllSongs : async(req,res)=>{
+        songModule.find()
+        .then((all)=>{
             res.status(200).json({all}).catch(e =>{
                 res.status(403).json({message:e})
             })
         })
     },
+
 }
