@@ -7,7 +7,7 @@ const songModule =mongoose.Schema({
     artwork:{type: Buffer},
     artist:{type:String , required:true},
     duration:{type:Number , required:false},
-    genres:{type:[String] , required:true},
+    Category:{type:[Number] , required:true},
     song:{
         data:{type:Buffer},
     }
