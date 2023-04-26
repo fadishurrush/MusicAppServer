@@ -41,4 +41,14 @@ module.exports = {
             res.status(400).json({message: e})
         })
     },
+    updateHistory : (req,res)=>{
+      const day = req.query.day;
+      historyModule.updateOne({day:day},req.body.song)
+      .then(() =>{
+          res.status(200).json({message:"updated"})
+      }).catch(e =>{
+          res.status(405).json({message: e})
+      })
+  },
+  
 };
