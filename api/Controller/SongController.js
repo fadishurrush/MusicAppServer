@@ -11,12 +11,104 @@ const clint = new MongoClient(
   "mongodb+srv://Devil8Pro:FadixDevil_1402@musicapp.yjfs580.mongodb.net/?retryWrites=true&w=majority"
 );
 const db = clint.db();
+const storage = multer.memoryStorage();
+        const upload = multer({
+          storage: storage,
+        });
 module.exports = {
   addSong: (req, res) => {
     let body = req.body;
+    var title = body?.title
+    console.log("title" , title); 
     try {
-    this.addSongURL(req,res)
-    this.addArtworkURL(req,res)
+        // song gridfs upload
+        // upload.single("song")(req, res, (err) => {
+        //   if (err) {
+        //     return res
+        //       .status(400)
+        //       .json({ message: "Upload Request Validation Failed", error: err });
+        //   } else if (!body.title) {
+        //     return res.status(400).json({ message: "No track name in request body" });
+        //   }
+      
+        //   let trackName = body.title;
+      
+        //   // Covert buffer to Readable Stream
+        //   const readableTrackStream = new Readable();
+      
+        //   readableTrackStream.push(req.file.buffer);
+        //   readableTrackStream.push(null);
+      
+        //   let bucket = new mongodb.GridFSBucket(db, {
+        //     bucketName: "songs",
+        //   });
+      
+        //   let uploadStream = bucket.openUploadStream(trackName);
+        //   let id = uploadStream.id;
+        //   readableTrackStream.pipe(uploadStream);
+      
+        //   uploadStream.on("error", () => {
+        //     return res.status(500).json({ message: "Error uploading file" });
+        //   });
+      
+        //   uploadStream.on("finish", () => {
+        //     return res.status(201).json({
+        //       message:
+        //         "File uploaded successfully, stored under Mongo ObjectID: " + id,
+        //     });
+        //   });
+        // });
+
+        // song gridfs upload
+        // 
+        // 
+        // 
+        // 
+        // artwork gridfs upload
+    
+        
+    // upload.single("artwork")(req, res, (err) => {
+    //     if (err) {
+    //       return res
+    //         .status(400)
+    //         .json({ message: "Upload Request Validation Failed", error: err });
+    //     } else if (body.title) {
+    //       return res.status(400).json({ message: "No track name in request body" });
+    //     }
+        
+    //     let trackName = body.title;
+    
+    //     // Covert buffer to Readable Stream
+    //     const readableTrackStream = new Readable();
+    
+    //     readableTrackStream.push(req.file.buffer);
+    //     readableTrackStream.push(null);
+    
+    //     let bucket = new mongodb.GridFSBucket(db, {
+    //       bucketName: "artworks",
+    //     });
+    
+    //     let uploadStream = bucket.openUploadStream(trackName);
+    //     let id = uploadStream.id;
+    //     readableTrackStream.pipe(uploadStream);
+    
+    //     uploadStream.on("error", () => {
+    //       return res.status(500).json({ message: "Error uploading file" });
+    //     });
+    
+    //     uploadStream.on("finish", () => {
+    //       return res.status(201).json({
+    //         message:
+    //           "File uploaded successfully, stored under Mongo ObjectID: " + id,
+    //       });
+    //     });
+    //   });
+
+        // artwork gridfs upload
+        // 
+        // 
+        // 
+    
     const newSong = new songModule({
         _id: new mongoose.Types.ObjectId(),
         title: body?.title,
@@ -65,10 +157,6 @@ module.exports = {
       });
   },
   addSongURL: (req, res) => {
-    const storage = multer.memoryStorage();
-    const upload = multer({
-      storage: storage,
-    });
     upload.single("song")(req, res, (err) => {
       if (err) {
         return res
@@ -109,7 +197,7 @@ module.exports = {
   getSongURL: async (req, res) => {
     res.set("content-type", "audio/mp3");
     res.set("accept-ranges", "bytes");
-    var filename = req.body?.title;
+    var filename = req.query?.title;
     let bucket = new mongodb.GridFSBucket(db, {
       bucketName: "songs",
     });
@@ -138,10 +226,7 @@ module.exports = {
     }
   },
   addArtworkURL: (req, res) => {
-    const storage = multer.memoryStorage();
-    const upload = multer({
-      storage: storage,
-    });
+    
     upload.single("artwork")(req, res, (err) => {
       if (err) {
         return res
@@ -245,3 +330,5 @@ module.exports = {
     });
   },
 };
+
+

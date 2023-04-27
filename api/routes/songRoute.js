@@ -27,7 +27,7 @@ const {
   addSongURL,
 } = require("../Controller/SongController");
 
-songRouter.post("/postSong",upload.fields( [{name :"Song", maxCount :1},{name :"artwork", maxCount :1}]),addSong);
+songRouter.post("/postSong",addSong);
 songRouter.post("/postArtworkURL",addArtworkURL);
 songRouter.post("/postSongURL",addSongURL);
 
