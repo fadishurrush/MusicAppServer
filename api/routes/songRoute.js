@@ -22,14 +22,19 @@ const {
   updateSong,
   getAllSongs,
   getSongURL,
-  // getSongArtwork
+  addArtworkURL,
+  getSongArtwork,
+  addSongURL,
 } = require("../Controller/SongController");
 
 songRouter.post("/postSong",upload.fields( [{name :"Song", maxCount :1},{name :"artwork", maxCount :1}]),addSong);
+songRouter.post("/postArtworkURL",addArtworkURL);
+songRouter.post("/postSongURL",addSongURL);
 
 songRouter.get("/getSong", getSong);
 songRouter.get("/getSongURL", getSongURL);
-// songRouter.get("/getSongArtwork", getSongArtwork);
+songRouter.get("/getArtworkURL", getSongArtwork);
+songRouter.get("/getSongURL", getSongURL);
 songRouter.delete("/deleteSong", deleteSong);
 songRouter.patch("/updateSong", updateSong);
 songRouter.get("/getAllSongs", getAllSongs);
