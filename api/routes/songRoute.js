@@ -21,11 +21,15 @@ const {
   deleteSong,
   updateSong,
   getAllSongs,
+  getSongURL,
+  // getSongArtwork
 } = require("../Controller/SongController");
 
 songRouter.post("/postSong",upload.fields( [{name :"Song", maxCount :1},{name :"artwork", maxCount :1}]),addSong);
 
 songRouter.get("/getSong", getSong);
+songRouter.get("/getSongURL", getSongURL);
+// songRouter.get("/getSongArtwork", getSongArtwork);
 songRouter.delete("/deleteSong", deleteSong);
 songRouter.patch("/updateSong", updateSong);
 songRouter.get("/getAllSongs", getAllSongs);
