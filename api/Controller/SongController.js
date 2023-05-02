@@ -97,6 +97,8 @@ module.exports = {
     console.log("title",title);
     songModule.find({title : title}).then(DBres =>{
       console.log("dbres =",DBres);
+      let category =[]
+      
       res.status(DBres ? 200 : 400).json(
         DBres != null
           ? {
