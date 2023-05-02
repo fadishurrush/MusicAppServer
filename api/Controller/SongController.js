@@ -94,26 +94,24 @@ module.exports = {
   },
   getSong: (req, res) => {
     const title = req.query?.title;
-    songModule
-      .find({ title: title })
-      .then((dbRes) => {
-        res.status(dbRes ? 200 : 400).json(
-          dbres != null
-            ? {
-                artist: dbres[0]?.artist,
-                title: dbres[0]?.title,
-                artwork: dbres[0]?.artwork,
-                url: dbres[0]?.URL,
-                duration: dbres[0]?.duration || null,
-                Category: dbres[0]?.Category,
-                id: dbres[0]._id,
-              }
-            : { message: "no such song" }
-        );
-      })
-      .catch((e) => {
-        res.status(500).json({ message: e });
-      });
+    console.log("title",title);
+    songModule.find({title : title}).then(DBres =>{
+      console.log("dbres =",DBres);
+      res.status(DBres ? 200 : 400).json(
+        DBres != null
+          ? {
+              artist: DBres[0]?.artist,
+              title: DBres[0]?.title,
+              artwork: DBres[0]?.artwork,
+              url: DBres[0]?.URL,
+              duration: DBres[0]?.duration || null,
+              Category: DBres[0]?.Category,
+              id: DBres[0]._id,
+            }
+          : { message: "no such song" }
+      );
+    })
+    
   },
   addSongURL: (req, res) => {
     upload.single("song")(req, res, (err) => {
