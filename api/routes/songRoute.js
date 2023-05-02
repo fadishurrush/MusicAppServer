@@ -1,20 +1,5 @@
 const express = require("express");
 const songRouter = express.Router();
-const multer = require("multer");
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if(file.fieldname === "Song"){
-      cb(null, "songs");
-    }
-    else{
-    cb(null, "artworks");
-    }
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
 const {
   addSong,
   getSong,

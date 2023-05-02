@@ -23,5 +23,4 @@ App.use(express.json());
 
 App.use(morgan("dev"));
 App.use("/", Routs);
-
 module.exports = App;
