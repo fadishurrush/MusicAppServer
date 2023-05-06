@@ -6,9 +6,9 @@ const songModule =mongoose.Schema({
     title: {type:String , required:true},
     artwork:{type: String},
     artist:{type:String , required:true},
-    duration:{type:Number , required:false},
+    duration:{type:Number , required:true},
     Category:{type:[String] , required:true},
-    URL:{type:String}
+    url:{type:String}
 })
 
 module.exports= mongoose.model('Song' , songModule)

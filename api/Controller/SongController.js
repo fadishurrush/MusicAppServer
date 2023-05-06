@@ -32,6 +32,18 @@ module.exports = {
         return res
           .status(400)
           .json({ message: "No track name in request body" });
+      }else if(req.files.artwork.length ===0){
+        return res
+        .status(400)
+        .json({ message: "No track artwork in request body" });
+      }else if (req.files.song.length ===0){
+        return res
+        .status(400)
+        .json({ message: "No track file in request body" });
+      }else if(!req.body.artist || !req.body.duration || !req.body.Category){
+        return res
+        .status(400)
+        .json({ message: "didnt fill in all fields required in request body" });
       }
       const body = req.body
       let trackName = req.body.title;
@@ -45,7 +57,7 @@ module.exports = {
         }
       })
       const readableTrackStream = new Readable();
-      readableTrackStream.push(req.files?.song.buffer);
+      readableTrackStream.push(req.files?.song[0].buffer);
       readableTrackStream.push(null);
 
       let bucket = new mongodb.GridFSBucket(db, {
@@ -61,7 +73,7 @@ module.exports = {
       uploadStream.on("finish", () => {
       });
       // artwork
-      var base64String = req.files.artwork.buffer.toString("base64");
+      var base64String = req.files?.artwork[0].buffer.toString("base64");
     
           const newArtowork = new artworkModule ({
             _id: new mongoose.Types.ObjectId(),
@@ -78,11 +90,11 @@ module.exports = {
         const newSong = new songModule({
           _id: new mongoose.Types.ObjectId(),
           title: body?.title,
-          artwork: "https://mozikapp.onrender.com/getSongArtwork?title=" + body?.title,
+          artwork: "https://mozikapp.onrender.com/getSongArtwork?title=" + body?.title ,
           artist: body?.artist,
           duration: body?.duration,
           Category: body?.Category,
-          URL: "https://mozikapp.onrender.com/getSongURL?title=" + body?.title,
+          url: "https://mozikapp.onrender.com/getSongURL?title=" + body?.title,
         });
         newSong
           .save()
