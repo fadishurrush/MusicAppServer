@@ -8,6 +8,7 @@ const { Readable } = require("stream");
 const ObjectId = require("mongodb").ObjectID;
 const fs = require("fs");
 const artworkModule = require("../modules/artwork.module");
+const { title } = require("process");
 const clint = new MongoClient(
   "mongodb+srv://Devil8Pro:FadixDevil_1402@musicapp.yjfs580.mongodb.net/?retryWrites=true&w=majority"
 );
@@ -36,6 +37,13 @@ module.exports = {
       let trackName = req.body.title;
       console.log("trackname", trackName);
       // Covert buffer to Readable Stream
+      songModule.find({title:trackName}).then((dbres)=>{
+        if(!dbres){
+          return res.status(400).json({
+            message:"Song title exists"
+          })
+        }
+      })
       const readableTrackStream = new Readable();
       readableTrackStream.push(req.files?.song.buffer);
       readableTrackStream.push(null);
@@ -62,11 +70,6 @@ module.exports = {
           });
           newArtowork
             .save()
-            .then(() => {
-              res.status(200).json({
-                message: "artwork saved",
-              });
-            })
             .catch((e) => {
               res.status(400).json({ message: e });
             });
@@ -116,8 +119,8 @@ module.exports = {
     })
     
   },
-  addSongURL: (req, res) => {
-    upload.single("song")(req, res, (err) => {
+  addSongURL:(req, res) => {
+    upload.single("song") (req, res, (err) => {
       if (err) {
         return res
           .status(400)
@@ -130,6 +133,7 @@ module.exports = {
 
       let trackName = req.body.title;
       console.log("trackname", trackName);
+      
       // Covert buffer to Readable Stream
       const readableTrackStream = new Readable();
       readableTrackStream.push(req.file?.buffer);
@@ -138,6 +142,23 @@ module.exports = {
       let bucket = new mongodb.GridFSBucket(db, {
         bucketName: "songs",
       });
+
+      if (files.length === 0) {
+        res.status(407).json({
+          message: "file not found",
+        });
+      }
+
+    bucket.find({ filename }).toArray().then((bucketres)=>{
+      if(bucketres.length >= 1){
+        return res.status(400).json({
+          message:"Song title exists"
+        })
+      }
+    })
+      
+        
+      
       let uploadStream = bucket.openUploadStream(trackName);
       let id = uploadStream.id;
       readableTrackStream.pipe(uploadStream);
