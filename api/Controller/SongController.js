@@ -121,7 +121,7 @@ module.exports = {
               artist: DBres[0]?.artist,
               title: DBres[0]?.title,
               artwork: DBres[0]?.artwork,
-              url: DBres[0]?.URL,
+              url: DBres[0]?.url,
               duration: DBres[0]?.duration || null,
               Category: DBres[0]?.Category,
               id: DBres[0]._id,
