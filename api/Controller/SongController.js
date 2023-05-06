@@ -7,6 +7,7 @@ const MongoClient = require("mongodb").MongoClient;
 const { Readable } = require("stream");
 const ObjectId = require("mongodb").ObjectID;
 const fs = require("fs");
+const artworkModule = require("../modules/artwork.module");
 const clint = new MongoClient(
   "mongodb+srv://Devil8Pro:FadixDevil_1402@musicapp.yjfs580.mongodb.net/?retryWrites=true&w=majority"
 );
@@ -52,24 +53,24 @@ module.exports = {
       uploadStream.on("finish", () => {
       });
       // artwork
-      readableTrackStream.push(req.files?.artwork.buffer);
-      readableTrackStream.push(null);
-
-      bucket = new mongodb.GridFSBucket(db, {
-        bucketName: "artworks",
-      });
-
-      uploadStream = bucket.openUploadStream(trackName);
-      id = uploadStream.id;
-      readableTrackStream.pipe(uploadStream);
-
-      uploadStream.on("error", () => {
-        return res.status(500).json({ message: "Error uploading file" });
-      });
-
-      uploadStream.on("finish", () => {
-      });
-
+      var base64String = req.files.artwork.buffer.toString("base64");
+    
+          const newArtowork = new artworkModule ({
+            _id: new mongoose.Types.ObjectId(),
+            title: body?.title,
+            base64: base64String
+          });
+          newArtowork
+            .save()
+            .then(() => {
+              res.status(200).json({
+                message: "artwork saved",
+              });
+            })
+            .catch((e) => {
+              res.status(400).json({ message: e });
+            });
+      
       
         const newSong = new songModule({
           _id: new mongoose.Types.ObjectId(),
@@ -168,79 +169,6 @@ module.exports = {
     } else {
       var id = files[0]?._id;
       var trackId = new ObjectId(id);
-      let downloadStream = bucket.openDownloadStream(trackId);
-
-      downloadStream.on("data", (chunk) => {
-        res.write(chunk);
-      });
-
-      downloadStream.on("error", () => {
-        res.sendStatus(404);
-      });
-
-      downloadStream.on("end", () => {
-        res.end();
-      });
-    }
-  },
-  addArtworkURL: (req, res) => {
-    upload.single("artwork")(req, res, (err) => {
-      if (err) {
-        return res
-          .status(400)
-          .json({ message: "Upload Request Validation Failed", error: err });
-      } else if (!req.body.title) {
-        return res
-          .status(400)
-          .json({ message: "No track name in request body" });
-      }
-
-      let trackName = req.body.title;
-
-      // Covert buffer to Readable Stream
-      const readableTrackStream = new Readable();
-
-      readableTrackStream.push(req.file.buffer);
-      readableTrackStream.push(null);
-
-      let bucket = new mongodb.GridFSBucket(db, {
-        bucketName: "artworks",
-      });
-
-      let uploadStream = bucket.openUploadStream(trackName);
-      let id = uploadStream.id;
-      readableTrackStream.pipe(uploadStream);
-
-      uploadStream.on("error", () => {
-        return res.status(500).json({ message: "Error uploading file" });
-      });
-
-      uploadStream.on("finish", () => {
-        return res.status(201).json({
-          message:
-            "File uploaded successfully, stored under Mongo ObjectID: " + id,
-        });
-      });
-    });
-  },
-  getSongArtwork: async (req, res) => {
-    res.set("content-type", "image/jpeg");
-    res.set("accept-ranges", "bytes");
-    var filename = req.body?.title;
-    console.log("filename ", filename);
-    let bucket = new mongodb.GridFSBucket(db, {
-      bucketName: "artworks",
-    });
-    const files = await bucket.find({ filename }).toArray();
-    if (files.length === 0) {
-      console.log("entered");
-      res.status(404).json({
-        message: "file not found",
-      });
-    } else {
-      var id = files[0]?._id;
-      var trackId = new ObjectId(id);
-      console.log("track id ", trackId);
       let downloadStream = bucket.openDownloadStream(trackId);
 
       downloadStream.on("data", (chunk) => {
