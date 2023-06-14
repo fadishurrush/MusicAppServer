@@ -29,7 +29,7 @@ module.exports={
               user.token = token;
         
               // user
-              res.status(200).json(user);
+              res.status(200).json({user:user});
             }
             res.status(403).json({message:"Invalid Credentials"});
           } catch (err) {
