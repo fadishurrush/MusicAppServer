@@ -23,7 +23,6 @@ module.exports = {
       { name: "song", maxCount: 1 },
       { name: "artwork", maxCount: 1 },
     ])(req, res, (err) => {
-      console.log("files", req.files);
       if (err) {
         return res
           .status(400)
@@ -47,7 +46,6 @@ module.exports = {
       }
       const body = req.body
       let trackName = req.body.title;
-      console.log("trackname", trackName);
       // Covert buffer to Readable Stream
       songModule.find({title:trackName}).then((dbres)=>{
         if(!dbres){
@@ -110,9 +108,7 @@ module.exports = {
   },
   getSong: (req, res) => {
     const title = req.query?.title;
-    console.log("title",title);
     songModule.find({title : title}).then(DBres =>{
-      console.log("dbres =",DBres);
       let category =[]
       
       res.status(DBres ? 200 : 400).json(
@@ -144,7 +140,6 @@ module.exports = {
       }
 
       let trackName = req.body.title;
-      console.log("trackname", trackName);
       
       // Covert buffer to Readable Stream
       const readableTrackStream = new Readable();
@@ -193,7 +188,6 @@ module.exports = {
     let bucket = new mongodb.GridFSBucket(db, {
       bucketName: "songs",
     });
-    console.log("filename ", filename);
     const files = await bucket.find({ filename }).toArray();
     if (files.length === 0) {
       res.status(407).json({

@@ -46,7 +46,6 @@ module.exports={
             if (!(email && password )) {
               res.status(408).json({message:"All input is required"});
             }
-            console.log("check 1 passed");
             // check if user already exist
             // Validate if user exist in our database
             const oldUser = await userModule.findOne({ email });
@@ -54,7 +53,6 @@ module.exports={
             if (oldUser) {
               return res.status(409).json({message:"User Already Exist. Please Login"});
             }
-            console.log("check 2 passed");
             //Encrypt user password
             encryptedPassword = await bcrypt.hash(password, 10);
         
@@ -65,7 +63,6 @@ module.exports={
             });
             console.log("user created");
         
-            console.log("user id",user._id);
             const JWT_SECRET =
   "goK!pusp6ThEdURUtRenOwUhAsWUCLheBazl!uJLPlS8EbreWLdrupIwabRAsiBu";
             // Create token
@@ -75,9 +72,7 @@ module.exports={
             );
             
             // save user token
-            user.token = token;
-            console.log("token saved");
-        
+            user.token = token;        
             // return new user
             res.status(200).json(user);
           } catch (err) {

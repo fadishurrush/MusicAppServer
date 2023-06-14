@@ -54,7 +54,6 @@ module.exports = {
   },
   getSongArtwork: async (req, res) => {
     var filename = req.query?.title;
-    console.log("file name ", filename);
     artworkModule.find({title: filename}).then(Dbres=>{
       if(Dbres){
         Dbres = Dbres[0]
