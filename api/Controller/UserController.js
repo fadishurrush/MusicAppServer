@@ -51,7 +51,7 @@ module.exports={
             const oldUser = await userModule.findOne({ email });
         
             if (oldUser) {
-              return res.status(409).json({message:"User Already Exist. Please Login"});
+              return res.status(207).json({message:"User Already Exist. Please Login"});
             }
             //Encrypt user password
             encryptedPassword = await bcrypt.hash(password, 10);
@@ -74,7 +74,7 @@ module.exports={
             // save user token
             user.token = token;        
             // return new user
-            res.status(200).json(user);
+            res.status(200).json({user:user});
           } catch (err) {
             console.log(err);
           }
