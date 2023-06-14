@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const App = express();
 const mongoose = require("mongoose");
 const Routs = require("./api/routes/Routs");
+require("dotenv").config();
 
 mongoose.connect(
   "mongodb+srv://Devil8Pro:FadixDevil_1402@musicapp.yjfs580.mongodb.net/?retryWrites=true&w=majority",

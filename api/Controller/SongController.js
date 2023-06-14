@@ -228,9 +228,9 @@ module.exports = {
         res.status(400).json({ message: e });
       });
   },
-  updateSong: (req, res) => {
+  updateSong: async (req, res) => {
     const title = req.query.title;
-    songModule
+    await songModule
       .updateOne({ title: title }, req.body)
       .then(() => {
         res.status(200).json({ message: "updated" });
