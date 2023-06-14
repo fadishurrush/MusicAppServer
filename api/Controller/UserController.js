@@ -7,7 +7,7 @@ module.exports={
     Login: async (req , res) =>{
         try {
             // Get user input
-            const { email, password } = req.body;
+            const { email, password } = req.query;
         
             // Validate user input
             if (!(email && password)) {
