@@ -11,7 +11,7 @@ module.exports={
         
             // Validate user input
             if (!(email && password)) {
-              res.status(400).send("All input is required");
+              res.status(407).send("All input is required");
             }
             // Validate if user exist in our database
             const user = await userModule.findOne({ email });
@@ -31,7 +31,7 @@ module.exports={
               // user
               res.status(200).json(user);
             }
-            res.status(400).send("Invalid Credentials");
+            res.status(403).send("Invalid Credentials");
           } catch (err) {
             console.log(err);
           }
@@ -44,7 +44,7 @@ module.exports={
         
             // Validate user input
             if (!(email && password )) {
-              res.status(400).send("All input is required");
+              res.status(408).send("All input is required");
             }
             console.log("check 1 passed");
             // check if user already exist
@@ -79,7 +79,7 @@ module.exports={
             console.log("token saved");
         
             // return new user
-            res.status(201).json(user);
+            res.status(200).json(user);
           } catch (err) {
             console.log(err);
           }
