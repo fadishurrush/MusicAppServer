@@ -31,7 +31,7 @@ module.exports={
               // user
               res.status(200).json(user);
             }
-            res.status(403).send("Invalid Credentials");
+            res.status(403).json({message:"Invalid Credentials"});
           } catch (err) {
             console.log(err);
           }
