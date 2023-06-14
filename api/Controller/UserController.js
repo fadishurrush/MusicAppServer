@@ -44,7 +44,7 @@ module.exports={
         
             // Validate user input
             if (!(email && password )) {
-              res.status(408).send("All input is required");
+              res.status(408).json({message:"All input is required"});
             }
             console.log("check 1 passed");
             // check if user already exist
@@ -52,7 +52,7 @@ module.exports={
             const oldUser = await userModule.findOne({ email });
         
             if (oldUser) {
-              return res.status(409).send("User Already Exist. Please Login");
+              return res.status(409).json({message:"User Already Exist. Please Login"});
             }
             console.log("check 2 passed");
             //Encrypt user password
