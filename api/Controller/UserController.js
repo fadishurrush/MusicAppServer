@@ -148,13 +148,13 @@ module.exports = {
   },
   getFav: async (req, res) => {
     try {
-      const {email} = req.body
+      const {email} = req.query
       if(!email){
-        return res.status(506).json({message:"email required"})
+        return res.status(400).json({message:"email required"})
       }
       userModule.findOne({email:email}).then((dbres)=>{
         if(!dbres){
-          return res.status(505).json({message:"no such user"})
+          return res.status(400).json({message:"no such user"})
         }else{
           return res.status(200).json({Favorites:dbres.Favorites})
         }
