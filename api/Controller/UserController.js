@@ -147,6 +147,20 @@ module.exports = {
     } catch (error) {}
   },
   getFav: async (req, res) => {
-    
+    try {
+      const {email} = req.body
+      if(!email){
+        return res.status(506).json({message:"email required"})
+      }
+      userModule.findOne({email:email}).then((dbres)=>{
+        if(!dbres){
+          return res.status(505).json({message:"no such user"})
+        }else{
+          return res.status(200).json({Favorites:dbres.Favorites})
+        }
+      })
+    } catch (error) {
+      console.log("get Fav error : ",error);
+    }
   },
 };
