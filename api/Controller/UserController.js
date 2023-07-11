@@ -61,7 +61,6 @@ module.exports = {
         email: email.toLowerCase(), // sanitize: convert email to lowercase
         password: encryptedPassword,
       });
-      console.log("user created");
 
       const JWT_SECRET =
         "goK!pusp6ThEdURUtRenOwUhAsWUCLheBazl!uJLPlS8EbreWLdrupIwabRAsiBu";
@@ -85,18 +84,14 @@ module.exports = {
           if (dbres) {
             userModule.findOne({ email: userEmail }).then((user) => {
               if (user) {
-                console.log("dbres ", dbres);
-                console.log("favo ", user.Favorites);
                 var exists = false;
                 for (let index = 0; index < user.Favorites.length; index++) {
                   const element = user.Favorites[index];
-                  console.log("element :", element);
                   if (element.title === dbres.title) {
                     exists = true;
                     break;
                   }
                 }
-                console.log("exists", exists);
                 if (exists) {
                   var newfav = user.Favorites.filter(
                     (val) => val.title !== title
