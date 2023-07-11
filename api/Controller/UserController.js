@@ -81,72 +81,72 @@ module.exports = {
       const { title } = req.body;
       const { userEmail } = req.body;
       title || userEmail
-        ? null
-        : res.status(400).json({ message: "title is empty" });
-      await songModule.findOne({ title: title }).then((dbres) => {
-        if (dbres) {
-          userModule.findOne({ email: userEmail }).then((user) => {
-            if (user) {
-              console.log("dbres ", dbres);
-              console.log("favo ", user.Favorites);
-              var exists = false;
-              for (let index = 0; index < user.Favorites.length; index++) {
-                const element = user.Favorites[index];
-                console.log("element :", element);
-                if (element.title === dbres.title) {
-                  exists = true;
-                  break;
+        ? await songModule.findOne({ title: title }).then((dbres) => {
+          if (dbres) {
+            userModule.findOne({ email: userEmail }).then((user) => {
+              if (user) {
+                console.log("dbres ", dbres);
+                console.log("favo ", user.Favorites);
+                var exists = false;
+                for (let index = 0; index < user.Favorites.length; index++) {
+                  const element = user.Favorites[index];
+                  console.log("element :", element);
+                  if (element.title === dbres.title) {
+                    exists = true;
+                    break;
+                  }
                 }
-              }
-              console.log("exists", exists);
-              if (exists) {
-                var newfav = user.Favorites.filter(
-                  (val) => val.title !== title
-                );
-                userModule
-                  .updateOne(
-                    { email: userEmail },
-                    {
-                      $set: {
-                        Favorites: newfav,
-                      },
-                    }
-                  )
-                  .then(() => {
-                    return res
-                      .status(dbres ? 200 : 400)
-                      .json(
-                        dbres
-                          ? { message: "song removed from fav" }
-                          : { message: "no song found" }
-                      );
-                  });
+                console.log("exists", exists);
+                if (exists) {
+                  var newfav = user.Favorites.filter(
+                    (val) => val.title !== title
+                  );
+                  userModule
+                    .updateOne(
+                      { email: userEmail },
+                      {
+                        $set: {
+                          Favorites: newfav,
+                        },
+                      }
+                    )
+                    .then(() => {
+                      return res
+                        .status(dbres ? 200 : 400)
+                        .json(
+                          dbres
+                            ? { message: "song removed from fav" }
+                            : { message: "no song found" }
+                        );
+                    });
+                } else {
+                  userModule
+                    .updateOne(
+                      { email: userEmail },
+                      {
+                        $set: {
+                          Favorites: [...user.Favorites, dbres],
+                        },
+                      }
+                    )
+                    .then(() => {
+                      return res
+                        .status(dbres ? 200 : 400)
+                        .json(
+                          dbres
+                            ? { message: "song added to fav" }
+                            : { message: "no song found" }
+                        );
+                    });
+                }
               } else {
-                userModule
-                  .updateOne(
-                    { email: userEmail },
-                    {
-                      $set: {
-                        Favorites: [...user.Favorites, dbres],
-                      },
-                    }
-                  )
-                  .then(() => {
-                    return res
-                      .status(dbres ? 200 : 400)
-                      .json(
-                        dbres
-                          ? { message: "song added to fav" }
-                          : { message: "no song found" }
-                      );
-                  });
+                return res.status(400).json({ message: "user not found" });
               }
-            } else {
-              return res.status(400).json({ message: "user not found" });
-            }
-          });
-        }
-      });
+            });
+          }
+        })
+        : res.status(400).json({ message: "title is empty" });
+      
     } catch (error) {}
   },
   getFav: async (req, res) => {
