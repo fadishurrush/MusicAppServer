@@ -4,6 +4,7 @@ const userModule = require("../modules/user.module");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const songModule = require("../modules/song.module");
+const nodemailer = require("nodemailer");
 module.exports = {
   Login: async (req, res) => {
     try {
@@ -86,20 +87,22 @@ module.exports = {
         if (dbres) {
           userModule.findOne({ email: userEmail }).then((user) => {
             if (user) {
-              console.log("dbres ",dbres);
-              console.log("favo ",user.Favorites);
-              var exists = false ;
+              console.log("dbres ", dbres);
+              console.log("favo ", user.Favorites);
+              var exists = false;
               for (let index = 0; index < user.Favorites.length; index++) {
                 const element = user.Favorites[index];
-                console.log("element :",element);
-                if(element.title === dbres.title){
+                console.log("element :", element);
+                if (element.title === dbres.title) {
                   exists = true;
                   break;
                 }
               }
-              console.log("exists" ,exists);
+              console.log("exists", exists);
               if (exists) {
-                var newfav = user.Favorites.filter((val)=> val.title !==title)
+                var newfav = user.Favorites.filter(
+                  (val) => val.title !== title
+                );
                 userModule
                   .updateOne(
                     { email: userEmail },
@@ -148,19 +151,48 @@ module.exports = {
   },
   getFav: async (req, res) => {
     try {
-      const {email} = req.query
-      if(!email){
-        return res.status(400).json({message:"email required"})
+      const { email } = req.query;
+      if (!email) {
+        return res.status(400).json({ message: "email required" });
       }
-      userModule.findOne({email:email}).then((dbres)=>{
-        if(!dbres){
-          return res.status(400).json({message:"no such user"})
-        }else{
-          return res.status(200).json({Favorites:dbres.Favorites})
+      userModule.findOne({ email: email }).then((dbres) => {
+        if (!dbres) {
+          return res.status(400).json({ message: "no such user" });
+        } else {
+          return res.status(200).json({ Favorites: dbres.Favorites });
         }
-      })
+      });
     } catch (error) {
-      console.log("get Fav error : ",error);
+      console.log("get Fav error : ", error);
     }
+  },
+  AccountRecovery: async (req, res) => {
+    try {
+      const { email } = req.query;
+      if (!email) {
+        return res.status(400).json({ message: "email required" });
+      }
+      userModule.findOne({ email: email }).then((dbres) => {
+        if (!dbres) {
+          return res.status(400).json({ message: "no such user" });
+        } else {
+          // transporter set up
+          var transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "fadishurrush@gmail.com",
+              pass: "",
+            },
+          });
+          // mail options set up
+          var mailOptions = {
+            from: 'youremail@gmail.com',
+            to: `${email}`,
+            subject: 'Account Recovery from MoZik App',
+            text: 'thats a test subject'
+          };
+        }
+      });
+    } catch (error) {}
   },
 };
