@@ -203,20 +203,17 @@ module.exports = {
           if (!val) {
             return res.status(400).json({ message: "user not found" });
           }
-          const newHisArray = val.History;
-          newHisArray.push(newHistory);
-          newHisArray.unshift(newHistory);
           userModule
             .updateOne(
               { email: email },
               {
                 $set: {
-                  History: newHisArray,
+                  History: newHistory,
                 },
               }
             )
             .then(() => {
-              return res.status(200).json({ History: newHisArray });
+              return res.status(200).json({ History: newHistory });
             });
         })
         .catch((e) => {
