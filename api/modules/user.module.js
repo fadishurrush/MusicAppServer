@@ -6,6 +6,7 @@ const UserModule =mongoose.Schema({
     password :{type:String , required:true},
     Favorites : {type:[] , default:[]},
     History : {type:[] , default:[]},
+    Playlists : {type:[] , default:[]},
     token :{type: String}
 })
 

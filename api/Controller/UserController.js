@@ -107,7 +107,7 @@ module.exports = {
                       )
                       .then(() => {
                         return res
-                          .status(dbres ? 200 : 400)
+                          .status(dbres ? 200 : 500)
                           .json(
                             dbres
                               ? { message: "song removed from fav" }
@@ -126,7 +126,7 @@ module.exports = {
                       )
                       .then(() => {
                         return res
-                          .status(dbres ? 200 : 400)
+                          .status(dbres ? 200 : 500)
                           .json(
                             dbres
                               ? { message: "song added to fav" }
@@ -135,23 +135,23 @@ module.exports = {
                       });
                   }
                 } else {
-                  return res.status(400).json({ message: "user not found" });
+                  return res.status(500).json({ message: "user not found" });
                 }
               });
             }
           })
-        : res.status(400).json({ message: "title is empty" });
+        : res.status(500).json({ message: "title is empty" });
     } catch (error) {}
   },
   getFav: async (req, res) => {
     try {
       const { email } = req.query;
       if (!email) {
-        return res.status(400).json({ message: "email required" });
+        return res.status(500).json({ message: "email required" });
       }
       userModule.findOne({ email: email }).then((dbres) => {
         if (!dbres) {
-          return res.status(400).json({ message: "no such user" });
+          return res.status(500).json({ message: "no such user" });
         } else {
           return res.status(200).json({ Favorites: dbres.Favorites });
         }
@@ -164,11 +164,11 @@ module.exports = {
     try {
       const { email } = req.query;
       if (!email) {
-        return res.status(400).json({ message: "email required" });
+        return res.status(500).json({ message: "email required" });
       }
       userModule.findOne({ email: email }).then((dbres) => {
         if (!dbres) {
-          return res.status(400).json({ message: "no such user" });
+          return res.status(500).json({ message: "no such user" });
         } else {
           // transporter set up
           var transporter = nodemailer.createTransport({
@@ -193,15 +193,15 @@ module.exports = {
     try {
       const { email, newHistory } = req.body;
       if (!email) {
-        return res.status(400).json({ message: "email is required" });
+        return res.status(500).json({ message: "email is required" });
       } else if (!newHistory) {
-        return res.status(400).json({ message: "newHistory is required" });
+        return res.status(500).json({ message: "newHistory is required" });
       }
       userModule
         .findOne({ email: email })
         .then((val) => {
           if (!val) {
-            return res.status(400).json({ message: "user not found" });
+            return res.status(500).json({ message: "user not found" });
           }
           userModule
             .updateOne(
@@ -227,17 +227,68 @@ module.exports = {
     try {
       const { email } = req.query;
       if (!email) {
-        return res.status(400).json({ message: "email required" });
+        return res.status(500).json({ message: "email required" });
       }
       userModule.findOne({ email: email }).then((dbres) => {
         if (!dbres) {
-          return res.status(400).json({ message: "no such user" });
+          return res.status(500).json({ message: "no such user" });
         } else {
           return res.status(200).json({ History: dbres.History });
         }
       });
     } catch (error) {
       console.log("get History error ->", error);
+    }
+  },
+  addPlaylist: async (req, res) => {
+    try {
+      const { email, PlayList } = req.body;
+      if (!email) {
+        return res.status(500).json({ message: "email is required" });
+      } else if (!PlayList) {
+        return res.status(500).json({ message: "Playlist name  is required" });
+      }
+      userModule
+        .findOne({ email: email })
+        .then((val) => {
+          if (!val) {
+            return res.status(500).json({ message: "user not found" });
+          }
+          userModule
+            .updateOne(
+              { email: email },
+              {
+                $set: {
+                  Playlists: PlayList,
+                },
+              }
+            )
+            .then(() => {
+              return res.status(200).json({ Playlists: PlayList });
+            });
+        })
+        .catch((e) => {
+          console.log("find user error ->", e);
+        });
+    } catch (error) {
+      console.log("add playlist error ->", error);
+    }
+  },
+  getPlaylists: async (req, res) => {
+    try {
+      const { email } = req.query;
+      if (!email) {
+        return res.status(500).json({ message: "email required" });
+      }
+      userModule.findOne({ email: email }).then((dbres) => {
+        if (!dbres) {
+          return res.status(500).json({ message: "no such user" });
+        } else {
+          return res.status(200).json({ Playlists: dbres.Playlists });
+        }
+      });
+    } catch (error) {
+      console.log("get Playlists error ->", error);
     }
   },
 };
